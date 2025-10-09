@@ -15,6 +15,8 @@ import com.utn.ProgIII.service.interfaces.AuthService;
 import com.utn.ProgIII.service.interfaces.MiscService;
 import com.utn.ProgIII.service.interfaces.ProductSupplierService;
 import com.utn.ProgIII.validations.ProductSupplierValidations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -123,24 +125,24 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
      * @return Una lista de DTO con los datos para mostrar
      */
     @Override
-    public SupplierProductListDTO listProductsBySupplier(String companyName, String exchange_rate) {
+    public SupplierProductListDTO listProductsBySupplier(Pageable pageable, String companyName, String exchange_rate) {
 
         Supplier supplier = supplierRepository.findByCompanyName(companyName)
                 .orElseThrow(() -> new SupplierNotFoundException("El proveedor no existe"));
 
-        List<?> priceList = new ArrayList<>();
+        Page<?> priceList;
 
 
         if (!authService.isEmployee()) {
             try {
                 BigDecimal dolar = miscService.searchDollarPrice(exchange_rate).venta();
 
-                priceList = productSupplierRepository.productsBySupplierManager(supplier.getIdSupplier(),dolar);
+                priceList = productSupplierRepository.productsBySupplierManager(pageable, supplier.getIdSupplier(),dolar);
             } catch (UnexpectedServerErrorException e) {
-                priceList = productSupplierRepository.productsBySupplierManagerFallback(supplier.getIdSupplier());
+                priceList = productSupplierRepository.productsBySupplierManagerFallback(pageable, supplier.getIdSupplier());
             }
         } else {
-            priceList = productSupplierRepository.productsBySupplierEmployee(supplier.getIdSupplier());
+            priceList = productSupplierRepository.productsBySupplierEmployee(pageable, supplier.getIdSupplier());
         }
 
 
@@ -159,26 +161,26 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
      * @param exchange_rate Tipo de cotizacion de dolarapi.com
      * @return Una lista de DTO para mostrar
      */
-    public ProductPricesDTO listPricesByProduct(Long idProduct, String exchange_rate) {
+    public ProductPricesDTO listPricesByProduct(Pageable pageable, Long idProduct, String exchange_rate) {
         Product product = productRepository.findById(idProduct).orElseThrow(() -> new ProductNotFoundException("El producto no existe"));
 
         if (product.getStatus() == ProductStatus.DISABLED) {
             throw new ProductNotFoundException("El producto está desactivado, y no tendrá precios.");
         }
 
-        List<?> priceList = new ArrayList<>();
+        Page<?> priceList;
 
       
         if(!authService.isEmployee()){
             try {
                 BigDecimal dolar = miscService.searchDollarPrice(exchange_rate).venta();
 
-                priceList = productSupplierRepository.listPricesByProductManager(idProduct,dolar);
+                priceList = productSupplierRepository.listPricesByProductManager(pageable,idProduct,dolar);
             } catch (UnexpectedServerErrorException e) {
-                priceList = productSupplierRepository.listPricesByProductManagerFallback(idProduct);
+                priceList = productSupplierRepository.listPricesByProductManagerFallback(pageable,idProduct);
             }
         } else {
-           priceList = productSupplierRepository.listPricesByProductEmployee(idProduct);
+           priceList = productSupplierRepository.listPricesByProductEmployee(pageable,idProduct);
         }
 
         return new ProductPricesDTO(product.getIdProduct(),product.getName(),priceList);
