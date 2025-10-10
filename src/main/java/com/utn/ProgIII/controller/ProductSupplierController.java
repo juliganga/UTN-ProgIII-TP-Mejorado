@@ -110,10 +110,10 @@ public class ProductSupplierController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "El proveedor no existe")
     ))
-    @GetMapping("/filter/{companyName}")
-    public ResponseEntity<SupplierProductListDTO> listAllProductsBySupplier(Pageable pageable, @PathVariable @Parameter(description = "El nombre de una empresa") String companyName, @RequestParam(defaultValue = "oficial",required = false) @Parameter(description = "Un tipo de cotización disponible en dolarapi.com", required = false) String exchange_rate){
+    @GetMapping("/filter/{companyId}")
+    public ResponseEntity<SupplierProductListDTO> listAllProductsBySupplier(Pageable pageable, @PathVariable @Parameter(description = "El id de una empresa") Long companyId, @RequestParam(defaultValue = "oficial",required = false) @Parameter(description = "Un tipo de cotización disponible en dolarapi.com", required = false) String exchange_rate){
 
-        SupplierProductListDTO response = productSupplierService.listProductsBySupplier(pageable, companyName, exchange_rate);
+        SupplierProductListDTO response = productSupplierService.listProductsBySupplier(pageable, companyId, exchange_rate);
         return ResponseEntity.ok(response);
 
     }

@@ -120,14 +120,14 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
     /**
      * Lista las relaciones según el nombre de la empresa, los datos mostrados varían según el nivel de acceso del usuario
      *
-     * @param companyName   Nombre de proveedor para buscar
+     * @param companyId   Id del proveedor para buscar
      * @param exchange_rate Tipo de cotizacion de dolarapi.com
      * @return Una lista de DTO con los datos para mostrar
      */
     @Override
-    public SupplierProductListDTO listProductsBySupplier(Pageable pageable, String companyName, String exchange_rate) {
+    public SupplierProductListDTO listProductsBySupplier(Pageable pageable, Long companyId, String exchange_rate) {
 
-        Supplier supplier = supplierRepository.findByCompanyName(companyName)
+        Supplier supplier = supplierRepository.findById(companyId)
                 .orElseThrow(() -> new SupplierNotFoundException("El proveedor no existe"));
 
         Page<?> priceList;
