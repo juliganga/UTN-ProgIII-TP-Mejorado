@@ -105,9 +105,10 @@ public class UserController {
     ))
     @ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
     @GetMapping()
-    public ResponseEntity<List<UserWithCredentialDTO>> getOrFilterUsers(@RequestParam(required = false) String role,
-                                                                        @RequestParam(required = false ) String status) {
-        return ResponseEntity.ok(userService.filterUsers(role,status));
+    public ResponseEntity<Page<UserWithCredentialDTO>> getOrFilterUsers(@RequestParam(required = false) String role,
+                                                                        @RequestParam(required = false) String status,
+                                                                        @ParameterObject @PageableDefault(size = 10) Pageable paginacion) {
+        return ResponseEntity.ok(userService.filterUsers(role,status,paginacion));
     }
 
 

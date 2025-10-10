@@ -17,6 +17,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -133,9 +134,8 @@ public class UserServiceImpl implements UserService {
      * <p>
      */
     @Override
-    public List<UserWithCredentialDTO> filterUsers(String role, String status) {
+    public Page<UserWithCredentialDTO> filterUsers(String role, String status,Pageable pageable) {
         List<User> users;
-        List<UserWithCredentialDTO> usersDTO = new ArrayList<>();
 
         if(role!= null && !EnumUtils.isValidEnum(Role.class, role.toUpperCase())) throw new InvalidRequestException("Ese rol no está presente");
         if(status != null && !EnumUtils.isValidEnum(UserStatus.class, status.toUpperCase())) throw new InvalidRequestException("Ese estado no está presente");
@@ -150,11 +150,7 @@ public class UserServiceImpl implements UserService {
             users = userRepository.findByCredential_RoleAndStatus(Role.valueOf(role.toUpperCase()),UserStatus.valueOf(status.toUpperCase()));
         }
 
-        for (User user: users) {
-            usersDTO.add(userMapper.toUserWithCredentialDTO(user));
-        }
-
-        return usersDTO;
+        return new PageImpl<UserWithCredentialDTO>(users.stream().map(userMapper::toUserWithCredentialDTO).toList());
     }
 
     /**

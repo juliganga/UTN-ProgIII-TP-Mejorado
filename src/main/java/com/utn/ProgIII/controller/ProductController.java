@@ -73,6 +73,14 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Una página que contiene los datos de productos.
+     * <p>Se puede definir el tamaño con ?size=?</p>
+     * <p>Se puede definir el número de página con ?page=?</p>
+     * <p>Se puede ordenar según parámetro de objeto con ?sort=?</p>
+     * @param paginacion Una página con su contenido e información
+     * @return Una página con contenido e información
+     */
     //muestra la lista de todos los productos
     @GetMapping()
     @Operation(summary = "Devuelve todos los productos", description = "Devuelve todos los productos")
@@ -84,8 +92,8 @@ public class ProductController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "No hay resultados")
     ))
-    public ResponseEntity<List<ProductDTO>> getAllProduct (){
-        List <ProductDTO> response = productService.getAllProduct();
+    public ResponseEntity<Page<ProductDTO>> getAllProduct (@ParameterObject @PageableDefault(size = 10) Pageable paginacion){
+        Page<ProductDTO> response = productService.getAllProduct(paginacion);
 
         return ResponseEntity.ok(response);
     }
@@ -105,9 +113,9 @@ public class ProductController {
             schema = @Schema(example = "No hay resultados")
     ))
     @Operation(summary = "Se muestra una lista de productos por su estado", description = "Se muestra una lista según su estado")
-    public ResponseEntity<List<ProductDTO>> getAllProductByStatus(@PathVariable @Parameter(description = "El estado de un producto (ENABLED, DISABLED)", example = "ENABLED") String status){
+    public ResponseEntity<Page<ProductDTO>> getAllProductByStatus(@PathVariable @Parameter(description = "El estado de un producto (ENABLED, DISABLED)", example = "ENABLED") String status,@ParameterObject @PageableDefault(size = 10) Pageable paginacion){
 
-        List <ProductDTO> response = productService.getAllProductByStatus(status);
+        Page<ProductDTO> response = productService.getAllProductByStatus(status,paginacion);
 
         return ResponseEntity.ok(response);
     }
@@ -120,21 +128,14 @@ public class ProductController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "No hay resultados")
     ))
-    public ResponseEntity<List<ProductDTO>> getProductByName(@PathVariable @Parameter(description = "El nombre de un producto", example = "Manzana") String name){
+    public ResponseEntity<Page<ProductDTO>> getProductByName(@PathVariable @Parameter(description = "El nombre de un producto", example = "Manzana") String name,@ParameterObject @PageableDefault(size = 10) Pageable paginacion){
 
-        List<ProductDTO> response = productService.getProductByName(name);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(productService.getProductByName(name,paginacion));
     }
 
-    /**
-     * Una página que contiene los datos de productos.
-     * <p>Se puede definir el tamaño con ?size=?</p>
-     * <p>Se puede definir el número de página con ?page=?</p>
-     * <p>Se puede ordenar según parámetro de objeto con ?sort=?</p>
-     * @param paginacion Una página con su contenido e información
-     * @return Una página con contenido e información
-     */
+
+    @Deprecated()
+    /*
     @ApiResponse(
             responseCode = "200",
             description = "Encontrado",
@@ -160,7 +161,7 @@ public class ProductController {
     )
     {
         return ResponseEntity.ok(productService.getProductPage(paginacion));
-    }
+    }*/
 
     //modificar un producto
     @PutMapping("/{id}")

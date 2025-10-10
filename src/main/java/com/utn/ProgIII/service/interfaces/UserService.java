@@ -14,7 +14,7 @@ import java.util.List;
 public interface UserService {
     UserWithCredentialDTO createUserWithCredential(CreateUserDTO dto);
     UserWithCredentialDTO getUserById(Long id);
-    List<UserWithCredentialDTO> filterUsers(String role, String status);
+    Page<UserWithCredentialDTO> filterUsers(String role, String status,Pageable pageable);
     UserWithCredentialDTO updateUser(Long id, CreateUserDTO dto);
     void deleteOrRemoveUser(Long id, String method);
     Page<UserWithCredentialDTO> getUsersPage(Pageable pageable);
