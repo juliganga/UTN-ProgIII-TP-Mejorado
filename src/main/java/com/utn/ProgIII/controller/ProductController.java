@@ -134,7 +134,6 @@ public class ProductController {
     }
 
 
-    @Deprecated()
     /*
     @ApiResponse(
             responseCode = "200",
