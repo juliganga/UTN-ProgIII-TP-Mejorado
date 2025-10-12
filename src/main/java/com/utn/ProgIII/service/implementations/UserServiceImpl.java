@@ -141,13 +141,17 @@ public class UserServiceImpl implements UserService {
         if(status != null && !EnumUtils.isValidEnum(UserStatus.class, status.toUpperCase())) throw new InvalidRequestException("Ese estado no está presente");
 
         if (role == null && status == null) {
-            users = userRepository.findAll();
+            users = userRepository.findAll(pageable).stream().toList();
         } else if (status == null) {
-            users = userRepository.findByCredential_Role(Role.valueOf(role.toUpperCase()));
+            users = userRepository.findByCredential_Role(Role.valueOf(role.toUpperCase()),pageable);
         } else if (role == null) {
-            users = userRepository.findAllByStatus(UserStatus.valueOf(status.toUpperCase()));
+            users = userRepository.findAllByStatus(UserStatus.valueOf(status.toUpperCase()),pageable);
         } else {
-            users = userRepository.findByCredential_RoleAndStatus(Role.valueOf(role.toUpperCase()),UserStatus.valueOf(status.toUpperCase()));
+            users = userRepository.findByCredential_RoleAndStatus(Role.valueOf(role.toUpperCase()),UserStatus.valueOf(status.toUpperCase()),pageable);
+        }
+
+        if (users.isEmpty()) {
+            throw new UserNotFoundException("No se encontraron usuarios");
         }
 
         return new PageImpl<UserWithCredentialDTO>(users.stream().map(userMapper::toUserWithCredentialDTO).toList());

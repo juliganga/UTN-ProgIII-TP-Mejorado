@@ -4,6 +4,7 @@ import com.utn.ProgIII.model.Credential.Credential;
 import com.utn.ProgIII.model.Credential.Role;
 import com.utn.ProgIII.model.User.User;
 import com.utn.ProgIII.model.User.UserStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -16,13 +17,13 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     boolean existsByDni(String dni);
 
-    List<User> findAllByStatus(UserStatus status);
+    List<User> findAllByStatus(UserStatus status, Pageable pageable);
 
     boolean existsByCredentialRole(Role credentialRole);
 
-    List<User> findByCredential_Role(Role credentialRole);
+    List<User> findByCredential_Role(Role credentialRole, Pageable pageable);
 
-    List<User> findByCredential_RoleAndStatus(Role role, UserStatus userStatus);
+    List<User> findByCredential_RoleAndStatus(Role role, UserStatus userStatus, Pageable pageable);
 
     User findByCredential(Credential credential);
 
