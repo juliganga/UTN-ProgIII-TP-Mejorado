@@ -11,6 +11,7 @@ public interface ProductSupplierService {
 
     ResponseProductSupplierDTO createProductSupplier(CreateProductSupplierDTO createProductSupplierDTO);
     ResponseProductSupplierDTO updateProductSupplier(UpdateProductSupplierDTO updateProductSupplierDTO, Long id);
+    void deleteProductSupplier(Long idProductSupplier);
     SupplierProductListDTO listProductsBySupplier(Pageable pageable, Long companyName, String exchange_rate);
     ProductPricesDTO listPricesByProduct(Pageable pageable, Long idProduct, String exchange_rate);
     String uploadCsv(String filepath, Long idSupplier);

@@ -78,6 +78,15 @@ public class ProductSupplierController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProductSupplier(
+            @Parameter(description = "El ID de la relación para eliminar <b>permanentemente</b>", example = "1")
+            @PathVariable Long id){
+
+        productSupplierService.deleteProductSupplier(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "Busca todos los productos de un proveedor según su nombre", description = "Busca todos los productos de un proveedor según su nombre. Los contenidos dependen del permiso del usuario.")
     @ApiResponse(
             responseCode = "200",
@@ -155,8 +164,6 @@ public class ProductSupplierController {
     public ResponseEntity<ProductPricesDTO> listAllPricesByProduct(@ParameterObject @PageableDefault(size = 10) Pageable paginacion,@PathVariable @Parameter(description = "El ID de un producto", example = "1") Long productId, @RequestParam(defaultValue = "oficial",required = false) @Parameter(description = "Un tipo de cotización disponible en dolarapi.com", required = false) String exchange_rate){
         return ResponseEntity.ok(productSupplierService.listPricesByProduct(paginacion, productId, exchange_rate));
     }
-
-
 
     @Operation(summary = "Actualiza los precios de los productos de un proveedor masivamente",
             description = "Actualiza los precios de los productos de un proveedor por medio de una lista en formato .csv, " +
