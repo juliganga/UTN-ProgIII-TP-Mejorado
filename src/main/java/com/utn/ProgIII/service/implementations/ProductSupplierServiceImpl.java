@@ -93,6 +93,16 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         return mapper.fromEntityToDto(productSupplier);
     }
 
+    @Override
+    public void deleteProductSupplier(Long idProductSupplier) {
+        if(productRepository.existsById(idProductSupplier))
+        {
+            productRepository.deleteById(idProductSupplier);
+        } else {
+            throw new ProductSupplierNotExistException("Esa relación no existe");
+        }
+    }
+
     /**
      * Se actualiza una relación existente, con sus datos
      * @param updateProductSupplierDTO Un objeto con los datos para modificar la relación
