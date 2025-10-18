@@ -30,4 +30,10 @@ public class EnumController {
     {
         return ResponseEntity.ok().body(enumService.getAllRoles());
     }
+
+    @GetMapping("/user-state")
+    public ResponseEntity<List<EnumDTO>> viewUserStates()
+    {
+        return ResponseEntity.ok().body(enumService.getAllUserStates());
+    }
 }
