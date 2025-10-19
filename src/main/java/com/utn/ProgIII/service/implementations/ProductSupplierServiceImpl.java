@@ -95,9 +95,8 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
     @Override
     public void deleteProductSupplier(Long idProductSupplier) {
-        if(productRepository.existsById(idProductSupplier))
-        {
-            productRepository.deleteById(idProductSupplier);
+        if (productSupplierRepository.existsById(idProductSupplier)) {
+            productSupplierRepository.deleteById(idProductSupplier);
         } else {
             throw new ProductSupplierNotExistException("Esa relación no existe");
         }
