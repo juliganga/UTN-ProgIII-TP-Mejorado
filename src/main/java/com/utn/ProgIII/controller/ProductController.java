@@ -82,7 +82,7 @@ public class ProductController {
      * @return Una página con contenido e información
      */
     //muestra la lista de todos los productos
-    @GetMapping()
+    @GetMapping("/page")
     @Operation(summary = "Devuelve todos los productos", description = "Devuelve todos los productos")
     @ApiResponse(responseCode = "200", description = "Lista devuelta correctamente", content = @Content(
             mediaType = "application/json",
@@ -133,6 +133,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductByName(name,paginacion));
     }
 
+    @GetMapping("/active-list")
+    public ResponseEntity<List<ProductDTO>> getActiveProductsInList()
+    {
+        return ResponseEntity.ok(productService.getAllActiveProductAsList());
+    }
 
     /*
     @ApiResponse(

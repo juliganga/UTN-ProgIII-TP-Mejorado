@@ -132,6 +132,15 @@ public class SupplierController {
         return ResponseEntity.ok(supplierService.viewOneSupplier(id));
     }
 
+    @GetMapping("name/{name}")
+    public ResponseEntity<Page<ViewSupplierDTO>> getSuppliersByName(
+            @Parameter(description = "Nombre de proveedor", example = "Nombre de proveedor")
+            @PathVariable String name,
+            @ParameterObject @PageableDefault(size = 10) Pageable paginacion)
+    {
+        return ResponseEntity.ok(supplierService.viewPageSuppliersByName(name,paginacion));
+    }
+
     /**
      * Actualiza un proveedor existente con todos sus datos según el ID que tiene. Responde a peticiones http con la url "/{id}"
      * @param supplier_DTO Un objeto DTO que tiene todos los datos del proveedor

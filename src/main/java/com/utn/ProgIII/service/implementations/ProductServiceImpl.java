@@ -94,6 +94,18 @@ public class ProductServiceImpl implements ProductService {
         return page;
     }
 
+    @Override
+    public List<ProductDTO> getAllActiveProductAsList() {
+        List<ProductDTO> list = productRepository.findByStatus(ProductStatus.ENABLED).stream().map(productMapper::toProductDTO).toList();
+
+        if(list.isEmpty())
+        {
+            throw new ProductNotFoundException("No hay productos");
+        }
+
+        return list;
+    }
+
     /**
      * Busca productos según estado
      * @param status El estado del producto
