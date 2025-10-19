@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public record ProductPriceSupplierManagerDTO(
         @Schema(example = "1")
-        Long PriceId,
+        Long idProductSupplier,
         @Schema(example = "1")
         Long idSupplier,
         @Schema(example = "Empresa")

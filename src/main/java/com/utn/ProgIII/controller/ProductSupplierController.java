@@ -100,13 +100,13 @@ public class ProductSupplierController {
                                     summary = "Vista para rol MANAGER o superior",
 
                                     description = "Incluye todos los precios (costo y venta) y márgenes de ganancia",
-                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"PriceId\":1, \"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idProductSupplier\":1, \"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
                             ),
                             @ExampleObject(
                                     name = "manager-view-no-dollar-api",
                                     summary = "Vista para rol MANAGER o superior (API dólar caída o cotización inexistente)",
                                     description = "Incluye todos los precios (costo y venta) y márgenes de ganancia",
-                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"PriceId\":1,  \"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": \"not available\"}]}"
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idProductSupplier\":1,  \"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": \"not available\"}]}"
                             ),
                             @ExampleObject(
                                     name = "employee-view",
