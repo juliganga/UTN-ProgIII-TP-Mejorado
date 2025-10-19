@@ -14,6 +14,7 @@ public interface SupplierService {
     ViewSupplierDTO createSupplier(AddSupplierDTO supplierDTO);
     Page<ViewSupplierDTO> listSuppliers(Pageable pageable);
     List<ViewSupplierDTO> listAllSuppliers();
+    List<String> listSupplierNames();
 
 
 }

@@ -107,6 +107,22 @@ public class SupplierController {
         return ResponseEntity.ok(supplierService.listAllSuppliers());
     }
 
+    @GetMapping("/listSupplierNames")
+    @Operation(summary = "Devuelve todos los nombres de los proveedores", description = "Devuelve una lista con los nombres de todos los proveedores")
+    @ApiResponse(responseCode = "200", description = "Lista devuelta correctamente", content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = List.class)
+            )))
+    @ApiResponse(responseCode = "404", description = "Proveedores no encontrados", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "No hay resultados")
+    ))
+    public ResponseEntity<List<String>> getAllSupplierNameList (){
+        List<String> response = supplierService.listSupplierNames();
+
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * Consigue un proveedor con su respectivo id
      * @param id El ID del proveedor

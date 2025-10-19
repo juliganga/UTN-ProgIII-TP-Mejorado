@@ -11,6 +11,7 @@ public interface ProductService {
     ProductDTO getProductById(Long id);
     Page<ProductDTO> getAllProduct (Pageable paginacion);
     Page<ProductDTO> getAllProductByStatus (String status,Pageable pageable);
+    List<String> listProductNames();
     Page<ProductDTO> getProductByName(String name,Pageable pageable);
     ProductDTO createProductDto (ProductDTO prductoDto);
     ProductDTO updateProduct (Long id, ProductDTO productDto);

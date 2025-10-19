@@ -2,7 +2,9 @@ package com.utn.ProgIII.repository;
 
 import com.utn.ProgIII.model.Supplier.Supplier;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
@@ -11,4 +13,7 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
     boolean existsByCuit(String cuit);
 
     boolean existsByCompanyName(String companyName);
+
+    @Query("SELECT s.companyName FROM Supplier s")
+    List<String> getAllSupplierNames();
 }

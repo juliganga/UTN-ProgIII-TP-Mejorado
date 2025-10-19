@@ -149,6 +149,16 @@ public class ProductServiceImpl implements ProductService {
         return new PageImpl<ProductDTO>(products.stream().map(productMapper::toProductDTO).toList());
     }
 
+    public List<String> listProductNames() {
+        List<String> productNames = productRepository.getAllProductNames();
+
+        if(productNames.isEmpty()) {
+            throw new ProductNotFoundException("No hay resultados");
+        }
+
+        return productNames;
+    }
+
 
     /**
      * Crea un producto nuevo y lo guarda en la base de datos
