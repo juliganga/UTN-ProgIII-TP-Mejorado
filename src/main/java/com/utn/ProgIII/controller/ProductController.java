@@ -82,7 +82,7 @@ public class ProductController {
      * @return Una página con contenido e información
      */
     //muestra la lista de todos los productos
-    @GetMapping()
+    @GetMapping("/page")
     @Operation(summary = "Devuelve todos los productos", description = "Devuelve todos los productos")
     @ApiResponse(responseCode = "200", description = "Lista devuelta correctamente", content = @Content(
             mediaType = "application/json",
@@ -98,8 +98,8 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/listProductNames")
-    @Operation(summary = "Devuelve todos los nombres de los productos", description = "Devuelve una lista con los nombres de todos los productos")
+    @GetMapping("")
+    @Operation(summary = "Devuelve todos los productos en una lista", description = "Devuelve una lista de todos los productos")
     @ApiResponse(responseCode = "200", description = "Lista devuelta correctamente", content = @Content(
             mediaType = "application/json",
             array = @ArraySchema(schema = @Schema(implementation = List.class)
@@ -108,10 +108,8 @@ public class ProductController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "No hay resultados")
     ))
-    public ResponseEntity<List<String>> getAllProductNameList (){
-        List<String> response = productService.listProductNames();
-
-        return ResponseEntity.ok(response);
+    public ResponseEntity<List<ProductDTO>> getAllProductsList (){
+        return ResponseEntity.ok(productService.listProductNames());
     }
 
 

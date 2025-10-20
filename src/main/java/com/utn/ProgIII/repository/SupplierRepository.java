@@ -14,6 +14,4 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
     boolean existsByCompanyName(String companyName);
 
-    @Query("SELECT s.companyName FROM Supplier s")
-    List<String> getAllSupplierNames();
 }

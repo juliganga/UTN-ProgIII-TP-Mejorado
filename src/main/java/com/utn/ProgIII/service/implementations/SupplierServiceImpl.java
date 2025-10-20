@@ -90,18 +90,6 @@ public class SupplierServiceImpl implements SupplierService {
         return list;
     }
 
-    @Override
-    public List<String> listSupplierNames() {
-        List<String> supplierNames = supplierRepository.getAllSupplierNames();
-
-        if(supplierNames.isEmpty())
-        {
-            throw new SupplierNotFoundException("No hay proveedores");
-        }
-
-        return supplierNames;
-    }
-
     /**
      * Elimina un proveedor en caso de que exista
      * @param id El ID del proveedor
