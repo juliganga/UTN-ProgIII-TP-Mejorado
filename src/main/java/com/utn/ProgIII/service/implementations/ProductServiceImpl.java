@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 import com.utn.ProgIII.validations.ProductValidations;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -66,100 +67,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * Busca todos los productos
-     * @return Una lista de <code>ProductDto</code>
-     * @see ProductDTO
-     */
-    @Override
-    public List<ProductDTO> getAllProduct() {
-
-        List<Product> products = new ArrayList<>();
-
-        if(!authService.isEmployee())
-        {
-            products = productRepository.findAll();
-
-        } else {
-
-            products = productRepository.findByStatus(ProductStatus.ENABLED);
-
-        }
-
-        if(products.isEmpty())
-        {
-            throw new ProductNotFoundException("No hay resultados");
-        }
-
-        List<ProductDTO> productDTOList = new ArrayList<>();
-
-        for (Product product : products){
-            productDTOList.add(productMapper.toProductDTO(product));
-        }
-        return productDTOList;
-    }
-
-    /**
-     * Busca productos según estado
-     * @param status El estado del producto
-     * @return Lista <code>ProductDto</code>
-     * @see ProductStatus
-     * @see ProductDTO
-     *
-     */
-    @Override
-    public List<ProductDTO> getAllProductByStatus(String status) {
-
-        try {
-            ProductStatus value = ProductStatus.valueOf(status.toUpperCase());
-
-            List<Product> products = productRepository.findByStatus(value);
-            List<ProductDTO> productDTOList = new ArrayList<>();
-
-            for (Product product : products){
-                productDTOList.add(productMapper.toProductDTO(product));
-            }
-
-            if(productDTOList.isEmpty())
-            {
-                throw new ProductNotFoundException("No hay resultados");
-            }
-
-            return productDTOList;
-        } catch (IllegalArgumentException e){
-            throw new InvalidProductStatusException("El estado ingresado es inválido");
-        }
-    }
-
-    /**
-     * Busca un producto según nombre
-     * @param name El nombre del producto, se usa un LIKE de sql
-     * @return Retorna una lista de <code>ProductDto</code>
-     * @see ProductDTO
-     */
-
-    @Override
-    public List<ProductDTO> getProductByName(String name) {
-        List<Product> products = productRepository.findByNameContaining(name);
-        List<ProductDTO> productDTOS = new ArrayList<>();
-
-        if(authService.isEmployee())
-        {
-            products = products.stream().filter(x -> x.getStatus() == ProductStatus.ENABLED).toList();
-        }
-
-        for(Product product : products){
-            productDTOS.add(productMapper.toProductDTO(product));
-        }
-
-        if(productDTOS.isEmpty())
-        {
-            throw new ProductNotFoundException("No hay resultados");
-        }
-
-        return productDTOS;
-    }
-
-    /**
      * Una página que contiene los datos de productos.
      * <p>Se puede definir el tamaño con ?size=?</p>
      * <p>Se puede definir el número de página con ?page=?</p>
@@ -168,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
      * @return Una página con contenido e información
      */
     @Override
-    public Page<ProductDTO> getProductPage(Pageable paginacion) {
+    public Page<ProductDTO> getAllProduct(Pageable paginacion) {
 
         Page<ProductDTO> page = null;
 
@@ -186,6 +93,72 @@ public class ProductServiceImpl implements ProductService {
 
         return page;
     }
+
+    /**
+     * Busca productos según estado
+     * @param status El estado del producto
+     * @return Lista <code>ProductDto</code>
+     * @see ProductStatus
+     * @see ProductDTO
+     *
+     */
+    @Override
+    public Page<ProductDTO> getAllProductByStatus(String status,Pageable paginacion) {
+
+        try {
+            ProductStatus value = ProductStatus.valueOf(status.toUpperCase());
+
+            Page<ProductDTO> products = productRepository.findByStatus(value,paginacion).map(productMapper::toProductDTO);
+
+            if(products.isEmpty())
+            {
+                throw new ProductNotFoundException("No hay resultados");
+            }
+
+            return products;
+        } catch (IllegalArgumentException e){
+            throw new InvalidProductStatusException("El estado ingresado es inválido");
+        }
+    }
+
+    /**
+     * Busca un producto según nombre
+     * @param name El nombre del producto, se usa un LIKE de sql
+     * @return Retorna una lista de <code>ProductDto</code>
+     * @see ProductDTO
+     */
+
+    @Override
+    public Page<ProductDTO> getProductByName(String name,Pageable pageable) {
+
+        List<Product> products = productRepository.findByNameContaining(name,pageable);
+
+
+        if(authService.isEmployee())
+        {
+            products = products.stream().filter((x) -> x.getStatus() == ProductStatus.ENABLED).toList();
+        }
+
+        if(products.isEmpty())
+        {
+            throw new ProductNotFoundException("No hay resultados");
+        }
+
+
+
+        return new PageImpl<ProductDTO>(products.stream().map(productMapper::toProductDTO).toList());
+    }
+
+    public List<ProductDTO> listProductNames() {
+        List<ProductDTO> productNames = productRepository.findByStatus(ProductStatus.ENABLED).stream().map(productMapper::toProductDTO).toList();
+
+        if(productNames.isEmpty()) {
+            throw new ProductNotFoundException("No hay resultados");
+        }
+
+        return productNames;
+    }
+
 
     /**
      * Crea un producto nuevo y lo guarda en la base de datos

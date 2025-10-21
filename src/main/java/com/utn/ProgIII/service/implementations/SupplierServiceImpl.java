@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SupplierServiceImpl implements SupplierService {
 
@@ -74,6 +76,18 @@ public class SupplierServiceImpl implements SupplierService {
         }
 
         return page;
+    }
+
+    @Override
+    public List<ViewSupplierDTO> listAllSuppliers() {
+        List<ViewSupplierDTO> list = supplierRepository.findAll().stream().map(suppliermapper::toViewSupplierDTO).toList();
+
+        if(list.isEmpty())
+        {
+            throw new SupplierNotFoundException("No hay proveedores");
+        }
+
+        return list;
     }
 
     /**

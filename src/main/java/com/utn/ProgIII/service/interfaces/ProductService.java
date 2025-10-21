@@ -9,12 +9,12 @@ import java.util.List;
 public interface ProductService {
 
     ProductDTO getProductById(Long id);
-    List <ProductDTO> getAllProduct ();
-    List <ProductDTO> getAllProductByStatus (String status);
-    List <ProductDTO> getProductByName(String name);
+    Page<ProductDTO> getAllProduct (Pageable paginacion);
+    Page<ProductDTO> getAllProductByStatus (String status,Pageable pageable);
+    List<ProductDTO> listProductNames();
+    Page<ProductDTO> getProductByName(String name,Pageable pageable);
     ProductDTO createProductDto (ProductDTO prductoDto);
     ProductDTO updateProduct (Long id, ProductDTO productDto);
     void deleteProduct (Long id);
-    Page<ProductDTO> getProductPage(Pageable pageable);
 
 }

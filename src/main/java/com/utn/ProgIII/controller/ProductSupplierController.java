@@ -10,6 +10,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +78,15 @@ public class ProductSupplierController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProductSupplier(
+            @Parameter(description = "El ID de la relación para eliminar <b>permanentemente</b>", example = "1")
+            @PathVariable Long id){
+
+        productSupplierService.deleteProductSupplier(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "Busca todos los productos de un proveedor según su nombre", description = "Busca todos los productos de un proveedor según su nombre. Los contenidos dependen del permiso del usuario.")
     @ApiResponse(
             responseCode = "200",
@@ -88,13 +100,13 @@ public class ProductSupplierController {
                                     summary = "Vista para rol MANAGER o superior",
 
                                     description = "Incluye todos los precios (costo y venta) y márgenes de ganancia",
-                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"PriceId\":1, \"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idProductSupplier\":1, \"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": 0.1043}]}"
                             ),
                             @ExampleObject(
                                     name = "manager-view-no-dollar-api",
                                     summary = "Vista para rol MANAGER o superior (API dólar caída o cotización inexistente)",
                                     description = "Incluye todos los precios (costo y venta) y márgenes de ganancia",
-                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"PriceId\":1,  \"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": \"not available\"}]}"
+                                    value = "{\"idProduct\": 1, \"name\": \"Producto\", \"prices\": [{\"idProductSupplier\":1,  \"idSupplier\": 1, \"companyName\": \"Proveedor\", \"cost\": 100.00, \"profitMargin\": 20.00, \"price\": 120.00, \"dollarPrice\": \"not available\"}]}"
                             ),
                             @ExampleObject(
                                     name = "employee-view",
@@ -107,10 +119,10 @@ public class ProductSupplierController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "El proveedor no existe")
     ))
-    @GetMapping("/filter/{companyName}")
-    public ResponseEntity<SupplierProductListDTO> listAllProductsBySupplier(@PathVariable @Parameter(description = "El nombre de una empresa") String companyName, @RequestParam(defaultValue = "oficial",required = false) @Parameter(description = "Un tipo de cotización disponible en dolarapi.com", required = false) String exchange_rate){
+    @GetMapping("/filter/{companyId}")
+    public ResponseEntity<SupplierProductListDTO> listAllProductsBySupplier(Pageable pageable, @PathVariable @Parameter(description = "El id de una empresa") Long companyId, @RequestParam(defaultValue = "oficial",required = false) @Parameter(description = "Un tipo de cotización disponible en dolarapi.com", required = false) String exchange_rate){
 
-        SupplierProductListDTO response = productSupplierService.listProductsBySupplier(companyName, exchange_rate);
+        SupplierProductListDTO response = productSupplierService.listProductsBySupplier(pageable, companyId, exchange_rate);
         return ResponseEntity.ok(response);
 
     }
@@ -149,11 +161,9 @@ public class ProductSupplierController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "El producto está desactivado, y no tendrá precios.")
     ))
-    public ResponseEntity<ProductPricesDTO> listAllPricesByProduct(@PathVariable @Parameter(description = "El ID de un producto", example = "1") Long productId, @RequestParam(defaultValue = "oficial",required = false) @Parameter(description = "Un tipo de cotización disponible en dolarapi.com", required = false) String exchange_rate){
-        return ResponseEntity.ok(productSupplierService.listPricesByProduct(productId, exchange_rate));
+    public ResponseEntity<ProductPricesDTO> listAllPricesByProduct(@ParameterObject @PageableDefault(size = 10) Pageable paginacion,@PathVariable @Parameter(description = "El ID de un producto", example = "1") Long productId, @RequestParam(defaultValue = "oficial",required = false) @Parameter(description = "Un tipo de cotización disponible en dolarapi.com", required = false) String exchange_rate){
+        return ResponseEntity.ok(productSupplierService.listPricesByProduct(paginacion, productId, exchange_rate));
     }
-
-
 
     @Operation(summary = "Actualiza los precios de los productos de un proveedor masivamente",
             description = "Actualiza los precios de los productos de un proveedor por medio de una lista en formato .csv, " +
