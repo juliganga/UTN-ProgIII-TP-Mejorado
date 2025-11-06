@@ -98,6 +98,21 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("")
+    @Operation(summary = "Devuelve todos los productos en una lista", description = "Devuelve una lista de todos los productos")
+    @ApiResponse(responseCode = "200", description = "Lista devuelta correctamente", content = @Content(
+            mediaType = "application/json",
+            array = @ArraySchema(schema = @Schema(implementation = List.class)
+    )))
+    @ApiResponse(responseCode = "404", description = "Productos no encontrados", content = @Content(
+            mediaType = "text/plain;charset=UTF-8",
+            schema = @Schema(example = "No hay resultados")
+    ))
+    public ResponseEntity<List<ProductDTO>> getAllProductsList (){
+        return ResponseEntity.ok(productService.listProductNames());
+    }
+
+
     //muestra la lista de todos los productos por estado
     @GetMapping("/search/status/{status}")
     @ApiResponse(responseCode = "200", description = "Lista de productos según estado devuelta correctamente", content = @Content(
