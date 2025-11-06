@@ -58,6 +58,8 @@ public class SupplierServiceImpl implements SupplierService {
         return suppliermapper.toViewSupplierDTO(sup);
     }
 
+
+
     /**
      * Una página que contiene los datos de provedores.
      * <p>Se puede definir el tamaño con ?size=?</p>
@@ -88,6 +90,18 @@ public class SupplierServiceImpl implements SupplierService {
         }
 
         return list;
+    }
+
+    @Override
+    public Page<ViewSupplierDTO> viewPageSuppliersByName(String name, Pageable pageable) {
+        Page<ViewSupplierDTO> page = supplierRepository.findByCompanyNameContaining(name,pageable).map(suppliermapper::toViewSupplierDTO);
+
+        if(page.isEmpty())
+        {
+            throw new SupplierNotFoundException("No hay proveedores");
+        }
+
+        return page;
     }
 
     /**

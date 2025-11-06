@@ -148,6 +148,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductByName(name,paginacion));
     }
 
+    @GetMapping("/active-list")
+    public ResponseEntity<List<ProductDTO>> getActiveProductsInList()
+    {
+        return ResponseEntity.ok(productService.getAllActiveProductAsList());
+    }
 
     /*
     @ApiResponse(
