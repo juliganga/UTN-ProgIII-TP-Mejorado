@@ -106,6 +106,18 @@ public class ProductServiceImpl implements ProductService {
         return list;
     }
 
+    @Override
+    public List<ProductDTO> getAllProductsAsList() {
+        List<ProductDTO> list = productRepository.findAll().stream().map(productMapper::toProductDTO).toList();
+
+        if(list.isEmpty()) {
+            throw new ProductNotFoundException("No hay productos");
+        }
+
+        return list;
+    }
+
+
     /**
      * Busca productos según estado
      * @param status El estado del producto
@@ -160,17 +172,6 @@ public class ProductServiceImpl implements ProductService {
 
         return new PageImpl<ProductDTO>(products.stream().map(productMapper::toProductDTO).toList());
     }
-
-    public List<ProductDTO> listProductNames() {
-        List<ProductDTO> productNames = productRepository.findByStatus(ProductStatus.ENABLED).stream().map(productMapper::toProductDTO).toList();
-
-        if(productNames.isEmpty()) {
-            throw new ProductNotFoundException("No hay resultados");
-        }
-
-        return productNames;
-    }
-
 
     /**
      * Crea un producto nuevo y lo guarda en la base de datos

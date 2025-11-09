@@ -108,8 +108,8 @@ public class ProductController {
             mediaType = "text/plain;charset=UTF-8",
             schema = @Schema(example = "No hay resultados")
     ))
-    public ResponseEntity<List<ProductDTO>> getAllProductsList (){
-        return ResponseEntity.ok(productService.listProductNames());
+    public ResponseEntity<List<ProductDTO>> getAllProductsAsList(){
+        return ResponseEntity.ok(productService.getAllProductsAsList());
     }
 
 

@@ -1,7 +1,6 @@
 package com.utn.ProgIII.service.interfaces;
 
 import com.utn.ProgIII.dto.ProductDTO;
-import com.utn.ProgIII.model.Product.ProductStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,7 +12,7 @@ public interface ProductService {
     Page<ProductDTO> getAllProduct (Pageable paginacion);
     List<ProductDTO> getAllActiveProductAsList();
     Page<ProductDTO> getAllProductByStatus (String status,Pageable pageable);
-    List<ProductDTO> listProductNames();
+    List<ProductDTO> getAllProductsAsList();
     Page<ProductDTO> getProductByName(String name,Pageable pageable);
     ProductDTO createProductDto (ProductDTO prductoDto);
     ProductDTO updateProduct (Long id, ProductDTO productDto);
