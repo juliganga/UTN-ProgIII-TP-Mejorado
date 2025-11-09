@@ -119,7 +119,7 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
 
         productSupplier.setCost(newCost);
         productSupplier.setProfitMargin(newProfitMargin);
-        productSupplier.setPrice(newCost.add(newCost.multiply(newProfitMargin).divide(BigDecimal.valueOf(100), RoundingMode.CEILING)));
+        productSupplier.setPrice(newCost.add(newCost.multiply(newProfitMargin).divide(BigDecimal.valueOf(100),2,RoundingMode.CEILING)));
 
         productSupplierRepository.save(productSupplier);
 

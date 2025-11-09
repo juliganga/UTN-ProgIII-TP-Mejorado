@@ -53,7 +53,7 @@ public class ProductSupplier {
         this.product = product;
         this.cost = cost;
         this.profitMargin = profitMargin;
-        this.price = cost.add(cost.multiply(profitMargin).divide(BigDecimal.valueOf(100), RoundingMode.CEILING));
+        this.price = cost.add(cost.multiply(profitMargin).divide(BigDecimal.valueOf(100),2,RoundingMode.CEILING));
     }
 
 }
