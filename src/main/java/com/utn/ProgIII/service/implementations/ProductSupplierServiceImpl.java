@@ -234,4 +234,10 @@ public class ProductSupplierServiceImpl implements ProductSupplierService {
         return csvReader.uploadToDatabase(filepath,idSupplier,bulkProfitMargin);
     }
 
+    @Override
+    public ResponseProductSupplierDTO getProductSupplier(Long id) {
+        this.productSupplierValidations.productSupplierIdExist(id);
+
+        return this.mapper.fromEntityToDto(this.productSupplierRepository.getReferenceById(id)) ;
+    }
 }

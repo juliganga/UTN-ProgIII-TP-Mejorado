@@ -178,4 +178,9 @@ public class GlobalExceptionHandler {
          return message;
     }
 
+    @ExceptionHandler(NonExistentRelationshipException.class)
+    public ResponseEntity<String> handleNonExistentRelationshipException(NonExistentRelationshipException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
 }
