@@ -232,4 +232,12 @@ public class ProductSupplierController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseProductSupplierDTO> getById(@PathVariable(value = "id") Long id) {
+
+        ResponseProductSupplierDTO response = this.productSupplierService.getProductSupplier(id);
+
+        return ResponseEntity.ok(response);
+
+    }
 }
