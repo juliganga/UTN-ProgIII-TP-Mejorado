@@ -8,6 +8,7 @@ import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -24,98 +25,6 @@ import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    /*
-    @ExceptionHandler({SupplierNotFoundException.class})
-    public ResponseEntity<Object> supplierNotFoundException(SupplierNotFoundException ex)
-    {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ex.getMessage());
-    }
-
-    @ExceptionHandler({AddressNotFoundException.class})
-    public ResponseEntity<Object> addressNotFoundException(AddressNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ex.getMessage());
-    }
-
-    @ExceptionHandler(DuplicateEntityException.class)
-        public ResponseEntity<String> handleDuplicateEntityException(DuplicateEntityException ex){
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT).
-                body(ex.getMessage());
-    }
-
-    @ExceptionHandler({UserNotFoundException.class})
-    public ResponseEntity<Object> handleUserNotFoundException(UserNotFoundException ex) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ex.getMessage());
-    }
-    @ExceptionHandler({CredentialNotFoundException.class})
-    public ResponseEntity<Object> handleCredentialNotFoundException(CredentialNotFoundException ex) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ex.getMessage());
-    }
-
-    @ExceptionHandler({InvalidRequestException.class})
-    public ResponseEntity<Object> invalidRequestException(InvalidRequestException ex)
-    {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
-
-    @ExceptionHandler({NullAddressException.class})
-    public ResponseEntity<Object> nullAddressException(NullAddressException ex)
-    {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
-
-    @ExceptionHandler({NullCredentialsException.class})
-    public ResponseEntity<Object> nullCredentialsException(NullCredentialsException ex)
-    {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
-
-    @ExceptionHandler(DuplicateRelationshipException.class)
-    public ResponseEntity<String> handleDuplicateRelationshipException(DuplicateRelationshipException ex){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-    }
-
-    @ExceptionHandler(ProductSupplierNotExistException.class)
-    public ResponseEntity<String> handleProductSupplierNotExistException(ProductSupplierNotExistException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
-
-    @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<String> productNotFoundException(ProductNotFoundException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(ex.getMessage());
-    }
-
-    @ExceptionHandler(InvalidProductStatusException.class)
-    public ResponseEntity<String> invalidProductStatusException (InvalidProductStatusException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                         .body(ex.getMessage());
-    }
-
-    @ExceptionHandler(SelfDeleteUserException.class)
-    public ResponseEntity<String> SelfDeleteUserProtection(SelfDeleteUserException e)
-    {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-    }
-
-    @ExceptionHandler(ForbiddenModificationException.class)
-    public ResponseEntity<String> forbiddenModificationException(ForbiddenModificationException e)
-    {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-    }
-
-    @ExceptionHandler(NonExistentRelationshipException.class)
-    public ResponseEntity<String> handleNonExistentRelationshipException(NonExistentRelationshipException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
-    */
-
 
     // Bad constraints (from jakarta)
     @ExceptionHandler(ConstraintViolationException.class)
@@ -253,5 +162,14 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
+    /* From Spring Security */
+    @ExceptionHandler({AuthenticationException.class})
+    private ProblemDetail handleAuthenticationException(AuthenticationException e) {
+        ProblemDetail problemDetail =  ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
+        problemDetail.setTitle("Error de Autenticación");
+        problemDetail.setDetail("Compruebe usuario y contraseña");
+        problemDetail.setProperty("timestamp", Instant.now().toString());
+        return problemDetail;
+    }
 
 }
