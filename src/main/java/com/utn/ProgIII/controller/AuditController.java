@@ -1,6 +1,7 @@
 package com.utn.ProgIII.controller;
 
 import com.querydsl.core.BooleanBuilder;
+import com.utn.ProgIII.dto.AuditLogDTO;
 import com.utn.ProgIII.model.Audit.AuditLog;
 import com.utn.ProgIII.model.Audit.QAuditLog;
 import com.utn.ProgIII.repository.AuditLogRepository;
@@ -36,10 +37,10 @@ public class AuditController {
     ))
     @ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
     @GetMapping("/logs")
-    public ResponseEntity<Page<AuditLog>> getAuditLogs(@RequestParam(required = false) String category,
+    public ResponseEntity<Page<AuditLogDTO>> getAuditLogs(@RequestParam(required = false) String category,
             @RequestParam(required = false) Integer type, Pageable pageable) {
 
-        Page<AuditLog> logsPage = auditService.getAuditLogs(category, type, pageable);
+        Page<AuditLogDTO> logsPage = auditService.getAuditLogs(category, type, pageable);
         return ResponseEntity.ok(logsPage);
     }
 }

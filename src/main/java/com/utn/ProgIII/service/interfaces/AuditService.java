@@ -1,9 +1,9 @@
 package com.utn.ProgIII.service.interfaces;
 
-import com.utn.ProgIII.model.Audit.AuditLog;
+import com.utn.ProgIII.dto.AuditLogDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface AuditService {
-    Page<AuditLog> getAuditLogs(String category, Integer type, Pageable pageable);
+    Page<AuditLogDTO> getAuditLogs(String category, Integer type, Pageable pageable);
 }

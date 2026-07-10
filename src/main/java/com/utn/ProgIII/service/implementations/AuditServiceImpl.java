@@ -1,7 +1,8 @@
 package com.utn.ProgIII.service.implementations;
 
 import com.querydsl.core.BooleanBuilder;
-import com.utn.ProgIII.model.Audit.AuditLog;
+import com.utn.ProgIII.dto.AuditLogDTO;
+import com.utn.ProgIII.mapper.AuditMapper;
 import com.utn.ProgIII.model.Audit.QAuditLog;
 import com.utn.ProgIII.repository.AuditLogRepository;
 import com.utn.ProgIII.service.interfaces.AuditService;
@@ -13,13 +14,16 @@ import org.springframework.stereotype.Service;
 public class AuditServiceImpl implements AuditService {
 
     final private AuditLogRepository auditLogRepository;
+    final private AuditMapper auditMapper;
 
-    public AuditServiceImpl(AuditLogRepository auditLogRepository) {
+
+    public AuditServiceImpl(AuditLogRepository auditLogRepository, AuditMapper auditMapper) {
         this.auditLogRepository = auditLogRepository;
+        this.auditMapper = auditMapper;
     }
 
     @Override
-    public Page<AuditLog> getAuditLogs(String category, Integer type, Pageable pageable) {
+    public Page<AuditLogDTO> getAuditLogs(String category, Integer type, Pageable pageable) {
         QAuditLog qAuditLog = QAuditLog.auditLog;
         BooleanBuilder predicate = new BooleanBuilder();
 
@@ -30,6 +34,6 @@ public class AuditServiceImpl implements AuditService {
             predicate.and(qAuditLog.revisionType.eq(type));
         }
 
-        return auditLogRepository.findAll(predicate, pageable);
+        return auditLogRepository.findAll(predicate, pageable).map(auditMapper::entityToDTO);
     }
 }
