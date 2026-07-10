@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.utn.ProgIII.model.Audit.AuditLog;
 import com.utn.ProgIII.model.Audit.QAuditLog;
 import com.utn.ProgIII.repository.AuditLogRepository;
+import com.utn.ProgIII.service.interfaces.AuditService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,10 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/audit")
@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuditController {
     @Autowired
     private AuditLogRepository auditLogRepository;
+
+    @Autowired
+    private AuditService auditService;
 
     @Operation(summary = "Obtener todos los registros de la tabla de auditoria", description = "Obtiene todos los registros de la tabla de auditoria")
     @ApiResponse(responseCode = "200",description = "Hay registros disponibles", content = @Content(
@@ -47,5 +50,11 @@ public class AuditController {
         Page<AuditLog> logsPage = auditLogRepository.findAll(predicate, pageable);
 
         return ResponseEntity.ok(logsPage);
+    }
+
+    @GetMapping("/detail/{category}/{rev}")
+    public ResponseEntity<Map<String, Object>> getGenericAuditDetail(@PathVariable String category, @PathVariable Long rev) {
+
+        return ResponseEntity.ok(auditService.getRawAuditRow(category, rev));
     }
 }
