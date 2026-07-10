@@ -11,9 +11,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +42,8 @@ public class AuditController {
     @ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
     @GetMapping("/logs")
     public ResponseEntity<Page<AuditLogDTO>> getAuditLogs(@RequestParam(required = false) String category,
-            @RequestParam(required = false) Integer type, Pageable pageable) {
+                                                          @RequestParam(required = false) Integer type,
+                                                          @ParameterObject @PageableDefault(size = 10) @SortDefault(sort = "revisionDate", direction = Sort.Direction.DESC) Pageable pageable){
 
         Page<AuditLogDTO> logsPage = auditService.getAuditLogs(category, type, pageable);
         return ResponseEntity.ok(logsPage);
