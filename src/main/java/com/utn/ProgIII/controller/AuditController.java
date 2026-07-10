@@ -1,6 +1,7 @@
 package com.utn.ProgIII.controller;
 
 import com.querydsl.core.BooleanBuilder;
+import com.utn.ProgIII.dto.AuditLogDTO;
 import com.utn.ProgIII.model.Audit.AuditLog;
 import com.utn.ProgIII.model.Audit.QAuditLog;
 import com.utn.ProgIII.repository.AuditLogRepository;
@@ -10,9 +11,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +27,12 @@ import java.util.Map;
 @RequestMapping("/audit")
 @Tag(name = "Auditorias", description = "Operaciones relacionadas con las tablas de auditoria")
 public class AuditController {
-    @Autowired
-    private AuditLogRepository auditLogRepository;
+
+    final private AuditService auditService;
+
+    public AuditController(AuditService auditService) {
+        this.auditService = auditService;
+    }
 
     @Autowired
     private AuditService auditService;
@@ -34,21 +43,11 @@ public class AuditController {
     ))
     @ApiResponse(responseCode = "403", description = "Acceso prohibido/dirección no encontrada", content = @Content())
     @GetMapping("/logs")
-    public ResponseEntity<Page<AuditLog>> getAuditLogs(@RequestParam(required = false) String category,
-            @RequestParam(required = false) Integer type, Pageable pageable) {
+    public ResponseEntity<Page<AuditLogDTO>> getAuditLogs(@RequestParam(required = false) String category,
+                                                          @RequestParam(required = false) Integer type,
+                                                          @ParameterObject @PageableDefault(size = 10) @SortDefault(sort = "revisionDate", direction = Sort.Direction.DESC) Pageable pageable){
 
-        QAuditLog qAuditLog = QAuditLog.auditLog;
-        BooleanBuilder predicate = new BooleanBuilder();
-
-        if (category != null && !category.isEmpty()) {
-            predicate.and(qAuditLog.category.eq(category));
-        }
-        if (type != null) {
-            predicate.and(qAuditLog.revisionType.eq(type));
-        }
-
-        Page<AuditLog> logsPage = auditLogRepository.findAll(predicate, pageable);
-
+        Page<AuditLogDTO> logsPage = auditService.getAuditLogs(category, type, pageable);
         return ResponseEntity.ok(logsPage);
     }
 
