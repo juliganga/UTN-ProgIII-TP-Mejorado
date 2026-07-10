@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.utn.ProgIII.model.Audit.AuditLog;
 import com.utn.ProgIII.model.Audit.QAuditLog;
 import com.utn.ProgIII.repository.AuditLogRepository;
+import com.utn.ProgIII.service.interfaces.AuditService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,8 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/audit")
 @Tag(name = "Auditorias", description = "Operaciones relacionadas con las tablas de auditoria")
 public class AuditController {
-    @Autowired
-    private AuditLogRepository auditLogRepository;
+
+    final private AuditService auditService;
+
+    public AuditController(AuditService auditService) {
+        this.auditService = auditService;
+    }
 
     @Operation(summary = "Obtener todos los registros de la tabla de auditoria", description = "Obtiene todos los registros de la tabla de auditoria")
     @ApiResponse(responseCode = "200",description = "Hay registros disponibles", content = @Content(
@@ -34,18 +39,7 @@ public class AuditController {
     public ResponseEntity<Page<AuditLog>> getAuditLogs(@RequestParam(required = false) String category,
             @RequestParam(required = false) Integer type, Pageable pageable) {
 
-        QAuditLog qAuditLog = QAuditLog.auditLog;
-        BooleanBuilder predicate = new BooleanBuilder();
-
-        if (category != null && !category.isEmpty()) {
-            predicate.and(qAuditLog.category.eq(category));
-        }
-        if (type != null) {
-            predicate.and(qAuditLog.revisionType.eq(type));
-        }
-
-        Page<AuditLog> logsPage = auditLogRepository.findAll(predicate, pageable);
-
+        Page<AuditLog> logsPage = auditService.getAuditLogs(category, type, pageable);
         return ResponseEntity.ok(logsPage);
     }
 }
