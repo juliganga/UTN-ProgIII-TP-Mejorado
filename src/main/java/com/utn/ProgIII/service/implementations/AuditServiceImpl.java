@@ -20,12 +20,11 @@ import java.util.Map;
 @Service
 public class AuditServiceImpl implements AuditService {
 
-    final private AuditLogRepository auditLogRepository;
-    final private AuditMapper auditMapper;
-
     @PersistenceContext
     private EntityManager entityManager;
 
+    final private AuditLogRepository auditLogRepository;
+    final private AuditMapper auditMapper;
 
     public AuditServiceImpl(AuditLogRepository auditLogRepository, AuditMapper auditMapper) {
         this.auditLogRepository = auditLogRepository;
@@ -47,6 +46,7 @@ public class AuditServiceImpl implements AuditService {
         return auditLogRepository.findAll(predicate, pageable).map(auditMapper::entityToDTO);
     }
 
+    @Override
     public Map<String, Object> getRawAuditRow(String category, Long rev) {
         String tableName = category.toLowerCase() + "_audit";
 

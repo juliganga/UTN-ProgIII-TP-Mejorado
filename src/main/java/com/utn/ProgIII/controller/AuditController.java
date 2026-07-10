@@ -1,10 +1,7 @@
 package com.utn.ProgIII.controller;
 
-import com.querydsl.core.BooleanBuilder;
 import com.utn.ProgIII.dto.AuditLogDTO;
 import com.utn.ProgIII.model.Audit.AuditLog;
-import com.utn.ProgIII.model.Audit.QAuditLog;
-import com.utn.ProgIII.repository.AuditLogRepository;
 import com.utn.ProgIII.service.interfaces.AuditService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,7 +9,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,9 +30,6 @@ public class AuditController {
         this.auditService = auditService;
     }
 
-    @Autowired
-    private AuditService auditService;
-
     @Operation(summary = "Obtener todos los registros de la tabla de auditoria", description = "Obtiene todos los registros de la tabla de auditoria")
     @ApiResponse(responseCode = "200",description = "Hay registros disponibles", content = @Content(
             schema = @Schema(implementation = AuditLog.class)
@@ -51,9 +44,12 @@ public class AuditController {
         return ResponseEntity.ok(logsPage);
     }
 
+    @Operation(summary = "Obtener los datos de un movimiento puntual de la tabla de auditoría general", description = "" +
+            "Obtiene todos los datos de un movimiento, tomados de la tabla de auditoría correspondiente a ese tipo de movimiento" +
+            " y usando como referencia el ID del movimiento obtenido de la tabla general y la categoría del mismo" +
+            "Ya que una acción puede producir movimientos de dos categorías al mismo tiempo y con el mismo ID")
     @GetMapping("/detail/{category}/{rev}")
     public ResponseEntity<Map<String, Object>> getGenericAuditDetail(@PathVariable String category, @PathVariable Long rev) {
-
         return ResponseEntity.ok(auditService.getRawAuditRow(category, rev));
     }
 }
