@@ -25,6 +25,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -82,7 +84,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getAllActiveProductAsList() {
-        List<ProductDTO> list = productRepository.findByStatus(ProductStatus.ENABLED).stream().map(productMapper::toProductDTO).toList();
+        List<ProductDTO> list = productRepository.findByStatus(ProductStatus.ENABLED).stream().map(productMapper::toProductDTO).sorted(Comparator.comparing(ProductDTO::name)).toList();
 
         if(list.isEmpty())
         {
@@ -94,7 +96,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDTO> getAllProductsAsList() {
-        List<ProductDTO> list = productRepository.findAll().stream().map(productMapper::toProductDTO).toList();
+        List<ProductDTO> list = productRepository.findAll().stream().map(productMapper::toProductDTO).sorted(Comparator.comparing(ProductDTO::name)).toList();
 
         if(list.isEmpty()) {
             throw new ProductNotFoundException("No hay productos");

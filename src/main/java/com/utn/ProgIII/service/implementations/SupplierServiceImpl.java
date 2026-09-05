@@ -2,6 +2,7 @@ package com.utn.ProgIII.service.implementations;
 
 import com.querydsl.core.BooleanBuilder;
 import com.utn.ProgIII.dto.AddSupplierDTO;
+import com.utn.ProgIII.dto.ProductDTO;
 import com.utn.ProgIII.exceptions.SupplierNotFoundException;
 import com.utn.ProgIII.mapper.SupplierMapper;
 import com.utn.ProgIII.model.Address.Address;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.View;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -66,7 +69,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public List<ViewSupplierDTO> listAllSuppliers() {
-        List<ViewSupplierDTO> list = supplierRepository.findAll().stream().map(suppliermapper::toViewSupplierDTO).toList();
+        List<ViewSupplierDTO> list = supplierRepository.findAll().stream().map(suppliermapper::toViewSupplierDTO).sorted(Comparator.comparing(ViewSupplierDTO::companyName)).toList();
 
         if(list.isEmpty())
         {
