@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 @Component
 /*
  * Una clase que se dedica a convertir un DTO a un objeto y viceversa
@@ -35,7 +38,7 @@ public class ProductMapper {
         Double price = calculateClientPrice(product.getPrice(),profitMargin);
         String image_url = createImageURL(product.getImage_url());
 
-        return new ProductDTO(idProduct,name,status, profitMargin * 100, stock,price,category,image_url);
+        return new ProductDTO(idProduct,name,status, profitMargin, stock,price,category,image_url);
     }
 
     public ProductDTOOrder ProductDTOOrder(Product product)
@@ -60,7 +63,7 @@ public class ProductMapper {
 
         result.setStatus(productDTO.status() == null ? ProductStatus.ENABLED : ProductStatus.valueOf(productDTO.status().toUpperCase()));
 
-        result.setProfitMargin(productDTO.profitMargin() / 100);
+        result.setProfitMargin(productDTO.profitMargin());
         result.setStock(productDTO.stock());
 
         return result;
@@ -83,7 +86,11 @@ public class ProductMapper {
     private Double calculateClientPrice(Double cost, Double profit_margin)
     {
         if(cost == null) return null;
-        return cost + (profit_margin * cost);
+        double clientPrice = cost * (1 + profit_margin/100);
+
+        return BigDecimal.valueOf(clientPrice)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 
     private String createImageURL(String url)
